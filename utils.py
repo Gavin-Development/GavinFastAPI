@@ -98,7 +98,7 @@ def checkSwear(sentence, swearwords):
     return listSentenceClean
 
 
-async def predict(sentence, tokenizer, swear_words, start_token, end_token, max_len, model):
+def predict(sentence, tokenizer, swear_words, start_token, end_token, max_len, model):
     prediction = evaluate(sentence, model, max_len, start_token, end_token, tokenizer)
 
     predicated_sentence = tokenizer.decode([i for i in prediction if i < tokenizer.vocab_size])

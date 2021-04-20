@@ -15,5 +15,6 @@
                             "prick", "nickger", "cocks", "pussy", "fucking",
                             "bullshit", "slut", "fuckin'", "slut", "dick"],
   "TF_CPP_MIN_LOG_LEVEL": "3",
-  "UVICORN_WORKERS": "8"
+  "UVICORN_WORKERS": "8",
+  "MESSAGE_TIMEOUT": 5.0
 }

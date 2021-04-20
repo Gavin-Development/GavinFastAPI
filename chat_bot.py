@@ -26,6 +26,7 @@ import asyncio
 import logging
 from packaging import version
 from utils import predict, load_model, preprocess_sentence, tf_version
+from threading import Thread, Event
 
 
 INFO = "INFO:     "
@@ -33,10 +34,24 @@ WARN = "WARN:     "
 ERROR = "ERROR:     "
 
 
+class StoppableThread(Thread):
+    """Thread class with a stop() method. The thread itself has to check
+    regularly for the stopped() condition."""
+
+    def __init__(self, *args, **kwargs):
+        super(StoppableThread, self).__init__(*args, **kwargs)
+        self._stop_event = Event()
+
+    def stop(self):
+        raise Exception(f"Thread Killed. {self.getName()}")
+
+    def stopped(self):
+        return self._stop_event.is_set()
+
+
 class ChatBotTF:
     def __init__(self, start_token, end_token, tokenizer, max_len, model, model_name, hparams, config_file_path, logger):
         self.logger = logger
-        self.config = json.load(fp=open(config_file_path, "rb"))
         self.s_token = start_token
         self.e_token = end_token
         self.tokenizer = tokenizer
@@ -48,6 +63,8 @@ class ChatBotTF:
         self.hparams_dict = {}
         for i, hparam in enumerate(hparams[:-1]):  # use -1 to get rid of the last value returned by load_model
             self.hparams_dict[fields[i]] = hparam
+        self.config = json.load(fp=open(config_file_path, "rb"))
+        self.timeout = self.config["MESSAGE_TIMEOUT"]
         self.swear_words = self.config["FILTERED_WORDS"]
         self.INFO = INFO
         self.WARN = WARN
@@ -58,7 +75,7 @@ class ChatBotTF:
         logger = logging.getLogger("ChatBotTF.error")
         logger.setLevel(logging.INFO)
         logger.addHandler(logging.StreamHandler())
-        logger.info(INFO + "Using Tensorflow version: {}")
+        logger.info(INFO + "Using Tensorflow version: {}".format(tf_version))
         model_config = json.load(fp=open(config_file_path, "rb"))
         if not model_config['VERSION_OVERRIDE']:
             model_path = os.path.join(model_config['MODEL_DIR'], model_config['DEFAULT_MODEL_NAME'])
@@ -89,8 +106,8 @@ class ChatBotTF:
         start_token, end_token, tokenizer, max_len, model, model_name, hparams = load_model(model_path)
         return_cls = cls(start_token, end_token, tokenizer, max_len, model, model_name, hparams, config_file_path, logger)
         # run a predict once to load extra tf modules
-        asyncio.ensure_future(return_cls.predict_msg("test"))
+        return_cls.predict_msg("test")
         return return_cls
 
-    async def predict_msg(self, msg):
-        return await predict(preprocess_sentence(msg), self.tokenizer, self.swear_words, self.s_token, self.e_token, self.max_length, self.model)
+    def predict_msg(self, msg):
+        return predict(preprocess_sentence(msg), self.tokenizer, self.swear_words, self.s_token, self.e_token, self.max_length, self.model)
