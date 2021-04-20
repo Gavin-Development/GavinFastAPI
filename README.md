@@ -20,3 +20,6 @@ Then run `python3 main.py` to start the server.
 - `TF_CPP_MIN_LOG_LEVEL` (str["0", "1", "2", "3"]) Tensorflow log level. 0 Most verbose, 3 Least verbose
 - `UVICORN_WORKERS` (int) How many workers to use. 
 - `MESSAGE_TIMEOUT` (int) How many seconds till the API returns "Message Timed Out Error."
+
+## Licence
+[GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.txt). Should have a copy with this software.
