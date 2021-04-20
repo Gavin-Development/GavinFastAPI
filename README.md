@@ -3,7 +3,9 @@ This is part of the [Gavin](https://github.com/Scot-Survivor/GavinTraining) Fami
 to be able to make http requests to Gavin. Everything is returned in JSON.
 
 ## Install
-`pip install -r requirements.txt` To install all required libraries. 
+- `python -m virtualenv ./GavinAPI/` Create Virtual Environment.
+- Win: `./GavinAPI/Scripts/activate.bat` Linux/Mac: `source ./GavinAPI/bin/activate`
+- `pip install -r requirements.txt` To install all required libraries inside venv. 
 
 ## Run
 Then run `python3 main.py` to start the server.
