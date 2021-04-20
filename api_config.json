@@ -1,0 +1,19 @@
+{
+  "MODEL_DIR": "./models/",
+  "DEFAULT_MODEL_NAME": "Gerald",
+  "VERSION_OVERRIDE": false,
+  "VERSION": "",
+  "HOST": "localhost",
+  "PORT": 8000,
+  "LOG_LEVEL": "info",
+  "FILTERED_WORDS": ["cock", "tf", "reggin", "bellend", "twat",
+                            "bollocks", "wtf", "slag", "fucker", "rapist",
+                            "shit", "bitch", "minger", "nigger", "fking",
+                            "wanker", "hentai", "ffs", "porn", "tits",
+                            "fucking", "knob", "minge", "clunge", "whore",
+                            "bloodclat", "fuck", "cunt", "crap", "pissed",
+                            "prick", "nickger", "cocks", "pussy", "fucking",
+                            "bullshit", "slut", "fuckin'", "slut", "dick"],
+  "TF_CPP_MIN_LOG_LEVEL": "3",
+  "UVICORN_WORKERS": "8"
+}
