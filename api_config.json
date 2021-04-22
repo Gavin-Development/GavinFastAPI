@@ -4,7 +4,7 @@
   "VERSION_OVERRIDE": false,
   "VERSION": "",
   "HOST": "localhost",
-  "PORT": 8000,
+  "PORT": 8080,
   "LOG_LEVEL": "info",
   "FILTERED_WORDS": ["cock", "tf", "reggin", "bellend", "twat",
                             "bollocks", "wtf", "slag", "fucker", "rapist",
