@@ -8,7 +8,14 @@ to be able to make http requests to Gavin. Everything is returned in JSON.
 - `pip install -r requirements.txt` To install all required libraries inside venv. 
 
 ## Run
-Then run `python3 main.py` to start the server.
+### With file coverage:
+- `python3 main.py`
+### Without file coverage:
+Please note some settings api_config.json will not be parsed; you must manually edit the start.sh file:
+`--host <str>` `--port <int>` `--workers <int>`
+- `chmod +x start.sh`
+- `./start.sh`
+
 
 ## Config
 - `MODEL_DIR` (str) Path to where all the models are stored such as "./models"
