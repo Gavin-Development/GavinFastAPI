@@ -52,9 +52,8 @@ if __name__ == "__main__":
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = api_config['TF_CPP_MIN_LOG_LEVEL']
 
     flag = False
-    Config = uvicorn.Config("gavin:api", host=api_config['HOST'], port=api_config['PORT'], log_level=api_config['LOG_LEVEL'], reload=True, workers=api_config["UVICORN_WORKERS"])
+    Config = uvicorn.Config("gavin:api", host=api_config['HOST'], port=api_config['PORT'], log_level=api_config['LOG_LEVEL'], workers=api_config["UVICORN_WORKERS"])
     server = Server(config=Config)
-    server.start()
 
     path = '.'
     event_handler = PatternMatchingEventHandler(patterns=['gavin.py', 'utils.py', "api_config.json", "chat_bot.py"])
@@ -62,6 +61,7 @@ if __name__ == "__main__":
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
     observer.start()
+    server.start()
     try:
         while observer.is_alive():
             observer.join(1)
