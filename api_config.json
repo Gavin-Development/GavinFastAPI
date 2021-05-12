@@ -1,6 +1,6 @@
 {
   "MODEL_DIR": "./models/",
-  "DEFAULT_MODEL_NAME": "Gerald",
+  "DEFAULT_MODEL_NAME": "TestTransformer",
   "VERSION_OVERRIDE": false,
   "VERSION": "",
   "HOST": "localhost",
@@ -15,6 +15,6 @@
                             "prick", "nickger", "cocks", "pussy", "fucking",
                             "bullshit", "slut", "fuckin'", "slut", "dick"],
   "TF_CPP_MIN_LOG_LEVEL": "3",
-  "UVICORN_WORKERS": "8",
+  "UVICORN_WORKERS": "1",
   "MESSAGE_TIMEOUT": 5.0
 }

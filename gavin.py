@@ -1,16 +1,41 @@
-from concurrent.futures import ThreadPoolExecutor, TimeoutError
-from fastapi import FastAPI, Request, Response
+import asyncio
+import json
+from fastapi import FastAPI, Request, Response, HTTPException
+from pydantic import BaseModel
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from chat_bot import ChatBotTF
+from GavinBackend.GavinCore.models import TransformerIntegration
 
 limiter = Limiter(key_func=get_remote_address)
 api = FastAPI()
 api.state.limiter = limiter
 api.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 fmt = '%d/%m/%Y %H-%M-%S.%f'
-ChatBot = ChatBotTF.load("api_config.json")
+api_config = json.load(open('api_config.json', 'rb'))
+ChatBot = TransformerIntegration.load_model(api_config["MODEL_DIR"], api_config["DEFAULT_MODEL_NAME"])
+MESSAGE_TIMEOUT = api_config['MESSAGE_TIMEOUT']
+
+
+class Message(BaseModel):
+    """Message object for accepting json,
+    this could be expanded to inculde more
+    features, such as database storage"""
+    data: str
+
+
+@api.middleware('http')
+async def msg_timeout(request: Request, call_next):
+    if request.url.path == '/chat_bot' or request.url.path == "/chat_bot/":
+        try:
+            response = await asyncio.wait_for(call_next(request), timeout=MESSAGE_TIMEOUT)
+        except asyncio.TimeoutError:
+            raise HTTPException(status_code=408, detail=f"Message Timed Out. Took longer than: {MESSAGE_TIMEOUT}")
+        else:
+            return response
+    else:
+        response = await call_next(request)
+        return response
 
 
 @api.get(path='/')
@@ -22,30 +47,25 @@ async def root(request: Request, response: Response):
 @api.get(path="/config")
 @limiter.limit("1/second")
 async def config(request: Request, response: Response):
-    return ChatBot.config
+    return api_config
 
 
 @api.get(path='/chat_bot/hparams')
 @limiter.limit("1/second")
 async def model_hparams(request: Request, response: Response):
-    return ChatBot.hparams_dict
+    hparams = ChatBot.get_hparams()
+    hparams['TOKENIZER'] = f"Tokenizer Object. Vocab_Size: {ChatBot.vocab_size}"
+    return hparams
 
 
 @api.get(path='/chat_bot/model_name')
 @limiter.limit("1/second")
 async def model_name(request: Request, response: Response):
-    return {"ModelName": ChatBot.ModelName}
+    return {"ModelName": ChatBot.name}
 
 
-@api.get(path='/chat_bot/{prompt}')
+@api.post(path='/chat_bot/')
 @limiter.limit("10/second")
-async def chat_api(prompt: str, request: Request, response: Response):
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        msg_task = executor.submit(ChatBot.predict_msg, prompt)
-        try:
-            bot_response = msg_task.result(timeout=ChatBot.timeout)
-            ChatBot.logger.info(ChatBot.INFO + f"Prompt: {prompt} Response: {bot_response}")
-            return {"message": bot_response}
-        except TimeoutError:
-            ChatBot.logger.warn(ChatBot.WARN + f"Prompt: {prompt} timed out.")
-            return {"error": "Message Timeout."}
+async def chat_api(message: Message, request: Request, response: Response):
+    bot_response = ChatBot.predict(message.data)
+    return {"message": bot_response}
