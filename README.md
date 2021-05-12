@@ -3,6 +3,14 @@ This is part of the [Gavin](https://github.com/Scot-Survivor/GavinTraining) Fami
 to be able to make http requests to Gavin. Everything is returned in JSON.
 
 ## Install
+### Initial
+#### Either
+- `git submodule init` Initialise Submodule Git Repos.
+- `git submodule update` Fetch all required repos.
+#### Or
+- `git clone https://github.com/Scot-Survivor/GavinFastAPI.git --recurse-submodules` To automatically 
+run the above commands.
+### Python  
 - `python -m virtualenv ./GavinAPI/` Create Virtual Environment.
 - Win: `./GavinAPI/Scripts/activate.bat` Linux/Mac: `source ./GavinAPI/bin/activate`
 - `pip install -r requirements.txt` To install all required libraries inside venv. 
