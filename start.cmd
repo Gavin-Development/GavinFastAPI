@@ -1,1 +1,1 @@
-uvicorn gavin:api --host "localhost" --port 8000
+uvicorn gavin:api --host "0.0.0.0" --port 8000
