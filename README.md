@@ -37,6 +37,12 @@ Please note some settings api_config.json will not be parsed; you must manually 
 - `TF_CPP_MIN_LOG_LEVEL` (str["0", "1", "2", "3"]) Tensorflow log level. 0 Most verbose, 3 Least verbose
 - `UVICORN_WORKERS` (int) How many workers to use. 
 - `MESSAGE_TIMEOUT` (int) How many seconds till the API returns "Message Timed Out Error."
+- `CACHE_REQUEST_MAX` (int) How many requests should a Cache addition last for. 
+
+# TODO
+- Implement In Memory Cache (Added: 19/05/21)
+- Implement Database (SQLite) based Cache (Added: 19/05/21)
+- Implement Serving the associated Model Image (Added: 19/05/21)
 
 ## Licence
 [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.txt). Should have a copy with this software.
