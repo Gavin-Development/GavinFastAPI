@@ -8,3 +8,4 @@ watchdog==2.0.2
 tqdm==4.60.0
 packaging==20.9
 gunicorn==20.1.0
+pydantic==1.8.1
