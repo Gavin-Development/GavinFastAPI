@@ -16,5 +16,6 @@
                             "bullshit", "slut", "fuckin'", "slut", "dick"],
   "TF_CPP_MIN_LOG_LEVEL": "3",
   "UVICORN_WORKERS": "1",
-  "MESSAGE_TIMEOUT": 5.0
+  "MESSAGE_TIMEOUT": 5.0,
+  "CACHE_REQUEST_MAX": 100,
 }
