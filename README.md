@@ -38,7 +38,7 @@ Please note some settings api_config.json will not be parsed; you must manually 
 - `UVICORN_WORKERS` (int) How many workers to use. 
 - `MESSAGE_TIMEOUT` (int) How many seconds till the API returns "Message Timed Out Error."
 - `CACHE_REQUEST_MAX` (int) How many requests should a Cache addition last for. 
-- 'MAX_CACHE_STORE' (int) Max amount of messages that should be stored in the cache.
+- `MAX_CACHE_STORE` (int) Max amount of messages that should be stored in the cache.
 
 # TODO
 - Implement In Memory Cache (Added: 19/05/21)
