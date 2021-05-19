@@ -16,12 +16,13 @@ api_config = json.load(open('api_config.json', 'rb'))
 ChatBot = TransformerIntegration.load_model(api_config["MODEL_DIR"], api_config["DEFAULT_MODEL_NAME"])
 MESSAGE_TIMEOUT = api_config['MESSAGE_TIMEOUT']
 CACHE_REQUEST_MAX = api_config['CACHE_REQUEST_MAX']
+MAX_CACHE_STORE = api_config['MAX_CACHE_STORE']
 MESSAGE_CACHE = {}
 
 
 class Message(BaseModel):
     """Message object for accepting json,
-    this could be expanded to inculde more
+    this could be expanded to include more
     features, such as database storage"""
     data: str
 
@@ -79,5 +80,6 @@ async def chat_api(message: Message, request: Request, response: Response):
                 del MESSAGE_CACHE[message.data]
             return bot_response
         bot_response = ChatBot.predict(message.data)
-        MESSAGE_CACHE[message.data] = (bot_response, 0)
+        if not len(MESSAGE_CACHE.keys()) >= MAX_CACHE_STORE:
+            MESSAGE_CACHE[message.data] = (bot_response, 0)
         return {"message": bot_response}
