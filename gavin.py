@@ -29,6 +29,8 @@ class Message(BaseModel):
 
 @api.middleware('http')
 async def msg_timeout(request: Request, call_next):
+    """Times out a request after MESSAGE_TIMEOUT.
+    Only on a call to TensorFlow."""
     if (request.url.path == '/chat_bot' or request.url.path == "/chat_bot/") and request.method == 'POST':
         try:
             response = await asyncio.wait_for(call_next(request), timeout=MESSAGE_TIMEOUT)
@@ -44,18 +46,22 @@ async def msg_timeout(request: Request, call_next):
 @api.get(path='/')
 @limiter.limit("1/second")
 async def root(request: Request, response: Response):
+    """Returns a json of valid routes."""
     return {"paths": {route.path: route.name for route in api.routes[5:]}}
 
 
 @api.get(path="/config")
 @limiter.limit("1/second")
 async def config(request: Request, response: Response):
+    """Returns the config currently in process."""
     return api_config
 
 
 @api.get(path='/chat_bot/hparams')
 @limiter.limit("1/second")
 async def model_hparams(request: Request, response: Response):
+    """Return the Hyper parameters currently being used
+    by the model"""
     hparams = ChatBot.get_hparams()
     hparams['TOKENIZER'] = f"Tokenizer Object. Vocab_Size: {ChatBot.vocab_size}"
     return hparams
@@ -64,12 +70,14 @@ async def model_hparams(request: Request, response: Response):
 @api.get(path='/chat_bot/model_name')
 @limiter.limit("1/second")
 async def model_name(request: Request, response: Response):
+    """Return the model name."""
     return {"ModelName": ChatBot.name}
 
 
 @api.post(path='/chat_bot/')
 @limiter.limit("10/second")
 async def chat_api(message: Message, request: Request, response: Response):
+    """POST: Send a json object Message, get the bot_response from that."""
     if request.method == 'POST':
         if message.data in MESSAGE_CACHE.keys():
             bot_response_cache = MESSAGE_CACHE[message.data]
