@@ -15,6 +15,8 @@ fmt = '%d/%m/%Y %H-%M-%S.%f'
 api_config = json.load(open('api_config.json', 'rb'))
 ChatBot = TransformerIntegration.load_model(api_config["MODEL_DIR"], api_config["DEFAULT_MODEL_NAME"])
 MESSAGE_TIMEOUT = api_config['MESSAGE_TIMEOUT']
+CACHE_REQUEST_MAX = api_config['CACHE_REQUEST_MAX']
+MESSAGE_CACHE = {}
 
 
 class Message(BaseModel):
@@ -26,7 +28,7 @@ class Message(BaseModel):
 
 @api.middleware('http')
 async def msg_timeout(request: Request, call_next):
-    if request.url.path == '/chat_bot' or request.url.path == "/chat_bot/":
+    if (request.url.path == '/chat_bot' or request.url.path == "/chat_bot/") and request.method == 'POST':
         try:
             response = await asyncio.wait_for(call_next(request), timeout=MESSAGE_TIMEOUT)
         except asyncio.TimeoutError:
@@ -67,5 +69,15 @@ async def model_name(request: Request, response: Response):
 @api.post(path='/chat_bot/')
 @limiter.limit("10/second")
 async def chat_api(message: Message, request: Request, response: Response):
-    bot_response = ChatBot.predict(message.data)
-    return {"message": bot_response}
+    if request.method == 'POST':
+        if message.data in MESSAGE_CACHE.keys():
+            bot_response_cache = MESSAGE_CACHE[message.data]
+            bot_response = {"message": bot_response_cache[0]}
+            if not bot_response_cache[1]+1 > CACHE_REQUEST_MAX:
+                MESSAGE_CACHE[message.data] = (bot_response_cache[0], bot_response_cache[1]+1)
+            else:
+                del MESSAGE_CACHE[message.data]
+            return bot_response
+        bot_response = ChatBot.predict(message.data)
+        MESSAGE_CACHE[message.data] = (bot_response, 0)
+        return {"message": bot_response}
