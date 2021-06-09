@@ -7,6 +7,7 @@ RUN git clone https://github.com/Scot-Survivor/GavinFastAPI.git --recursive
 RUN cd GavinFastAPI && pip install -r requirements.txt
 RUN cd GavinFastAPI && chmod +x start.sh
 ADD models ./GavinFastAPI/models/.
+ADD api_config.json ./GavinFastAPI/.
 EXPOSE 8000
 WORKDIR "./GavinFastAPI"
 ENTRYPOINT ["./start.sh"]
