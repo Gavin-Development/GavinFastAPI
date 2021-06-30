@@ -4,4 +4,4 @@ uvicorn[standard]==0.13.4
 watchdog==2.0.2
 packaging==20.9
 gunicorn==20.1.0
-pydantic==1.8.1
+pydantic==1.8.2
