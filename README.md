@@ -26,7 +26,8 @@ Please note some settings api_config.json will not be parsed; you must manually 
 
 
 ## Config
-- `MODEL_DIR` (str) Path to where all the models are stored such as "./models"
+- `PREFORMER` (bool) True if the model is a preformer, false otherwise.
+- `MODEL_DIR` (str) Path to where all the models will be stored such as "./models"
 - `DEFAULT_MODEL_NAME` (str) Name of the model to load.
 - `VERSION_OVERRIDE` (bool) Whether to override `DEFAULT_MODEL_NAME` and base it on versions instead.
 - `VERSION` (str) If this is not blank, then load a model with this version.

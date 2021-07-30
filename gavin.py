@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from GavinBackend.GavinCore.models import TransformerIntegration
+from GavinBackend.GavinCore.models import TransformerIntegration, PreformerIntegration
 
 limiter = Limiter(key_func=get_remote_address)
 api = FastAPI()
@@ -13,7 +13,10 @@ api.state.limiter = limiter
 api.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 fmt = '%d/%m/%Y %H-%M-%S.%f'
 api_config = json.load(open('api_config.json', 'rb'))
-ChatBot = TransformerIntegration.load_model(api_config["MODEL_DIR"], api_config["DEFAULT_MODEL_NAME"])
+if api_config['PREFORMER']:
+    ChatBot = PreformerIntegration.load_model(api_config["MODEL_DIR"], api_config["DEFAULT_MODEL_NAME"])
+else:
+    ChatBot = TransformerIntegration.load_model(api_config["MODEL_DIR"], api_config["DEFAULT_MODEL_NAME"])
 MESSAGE_TIMEOUT = api_config['MESSAGE_TIMEOUT']
 CACHE_REQUEST_MAX = api_config['CACHE_REQUEST_MAX']
 MAX_CACHE_STORE = api_config['MAX_CACHE_STORE']

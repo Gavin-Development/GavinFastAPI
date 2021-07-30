@@ -1,4 +1,5 @@
 {
+  "PREFORMER": false,
   "MODEL_DIR": "./models/",
   "DEFAULT_MODEL_NAME": "TestTransformer",
   "VERSION_OVERRIDE": false,
