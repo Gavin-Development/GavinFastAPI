@@ -70,6 +70,14 @@ async def model_hparams(request: Request, response: Response):
     return hparams
 
 
+@api.get(path='/chat_bot/metadata')
+@limiter.limit("1/second")
+async def model_metadata(request: Request, response: Response):
+    """Return the Metadata that the current model version is using."""
+    metadata = ChatBot.get_metadata()
+    return metadata
+
+
 @api.get(path='/chat_bot/model_name')
 @limiter.limit("1/second")
 async def model_name(request: Request, response: Response):
@@ -85,8 +93,8 @@ async def chat_api(message: Message, request: Request, response: Response):
         if message.data in MESSAGE_CACHE.keys():
             bot_response_cache = MESSAGE_CACHE[message.data]
             bot_response = {"message": bot_response_cache[0]}
-            if not bot_response_cache[1]+1 > CACHE_REQUEST_MAX:
-                MESSAGE_CACHE[message.data] = (bot_response_cache[0], bot_response_cache[1]+1)
+            if not bot_response_cache[1] + 1 > CACHE_REQUEST_MAX:
+                MESSAGE_CACHE[message.data] = (bot_response_cache[0], bot_response_cache[1] + 1)
             else:
                 del MESSAGE_CACHE[message.data]
             return bot_response
