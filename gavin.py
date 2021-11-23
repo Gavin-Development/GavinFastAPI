@@ -23,6 +23,11 @@ MAX_CACHE_STORE = api_config['MAX_CACHE_STORE']
 MESSAGE_CACHE = {}
 
 
+def format_data(data: str):
+    data = data.replace(' newlinechar ', '\n').replace(' newlinechar ', '\n').replace('"', "'")
+    return data
+
+
 class Message(BaseModel):
     """Message object for accepting json,
     this could be expanded to include more
@@ -98,7 +103,7 @@ async def chat_api(message: Message, request: Request, response: Response):
             else:
                 del MESSAGE_CACHE[message.data]
             return bot_response
-        bot_response = ChatBot.predict(message.data)
+        bot_response = format_data(ChatBot.predict(message.data))
         if not len(MESSAGE_CACHE.keys()) >= MAX_CACHE_STORE:
             MESSAGE_CACHE[message.data] = (bot_response, 0)
         return {"message": bot_response}
