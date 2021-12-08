@@ -33,13 +33,13 @@ Please note some settings api_config.json will not be parsed; you must manually 
 - `VERSION` (str) If this is not blank, then load a model with this version.
 - `HOST` (str) The host to bind to.
 - `PORT` (int) The port to bind to.
-- `LOG_LEVEL` (str["INFO", "WARN", "ERROR"]) Log level of internal server (To come)
 - `FILTERED_WORDS` (list<str>) Words to censor on response from Gavin
 - `TF_CPP_MIN_LOG_LEVEL` (str["0", "1", "2", "3"]) Tensorflow log level. 0 Most verbose, 3 Least verbose
 - `UVICORN_WORKERS` (int) How many workers to use. 
 - `MESSAGE_TIMEOUT` (int) How many seconds till the API returns "Message Timed Out Error."
 - `CACHE_REQUEST_MAX` (int) How many requests should a Cache addition last for. 
 - `MAX_CACHE_STORE` (int) Max amount of messages that should be stored in the cache.
+- `LOGGING_LEVEL` (str["INFO", "WARN", "ERROR", "DEBUG"]) Log level of internal server.
 
 # TODO
 - Implement In Memory Cache (Added: 19/05/21)
