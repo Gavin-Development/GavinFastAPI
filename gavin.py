@@ -1,11 +1,13 @@
 import asyncio
 import json
+import logging
 from fastapi import FastAPI, Request, Response, HTTPException
 from pydantic import BaseModel
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from GavinBackend.GavinCore.models import TransformerIntegration, PerformerIntegration
+from utils import config_verification
 
 limiter = Limiter(key_func=get_remote_address)
 api = FastAPI()
@@ -17,10 +19,25 @@ if api_config['PREFORMER']:
     ChatBot = PerformerIntegration.load_model(api_config["MODEL_DIR"], api_config["DEFAULT_MODEL_NAME"])
 else:
     ChatBot = TransformerIntegration.load_model(api_config["MODEL_DIR"], api_config["DEFAULT_MODEL_NAME"])
+
+is_valid, exception = config_verification(api_config)
+if not is_valid:
+    raise exception
+
 MESSAGE_TIMEOUT = api_config['MESSAGE_TIMEOUT']
 CACHE_REQUEST_MAX = api_config['CACHE_REQUEST_MAX']
 MAX_CACHE_STORE = api_config['MAX_CACHE_STORE']
+LOGGING_LEVELS = {'DEBUG': logging.DEBUG,
+                  'INFO': logging.INFO,
+                  'WARNING': logging.WARNING,
+                  'ERROR': logging.ERROR,
+                  'CRITICAL': logging.CRITICAL}
+
+LOGGING_LEVEL = LOGGING_LEVELS[api_config['LOGGING_LEVEL']]
 MESSAGE_CACHE = {}
+
+logger = logging.getLogger(__name__)
+logger.setLevel(LOGGING_LEVEL)
 
 
 def format_data(data: str):
@@ -102,8 +119,10 @@ async def chat_api(message: Message, request: Request, response: Response):
                 MESSAGE_CACHE[message.data] = (bot_response_cache[0], bot_response_cache[1] + 1)
             else:
                 del MESSAGE_CACHE[message.data]
+            logging.debug(f"Cache Hit: {message.data}")
             return bot_response
         bot_response = format_data(ChatBot.predict(message.data))
         if not len(MESSAGE_CACHE.keys()) >= MAX_CACHE_STORE:
             MESSAGE_CACHE[message.data] = (bot_response, 0)
+        logging.debug(f"Cache Miss: {message.data}")
         return {"message": bot_response}
