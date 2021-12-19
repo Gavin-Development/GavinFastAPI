@@ -15,7 +15,7 @@ api.state.limiter = limiter
 api.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 fmt = '%d/%m/%Y %H-%M-%S.%f'
 api_config = json.load(open('api_config.json', 'rb'))
-if api_config['PREFORMER']:
+if api_config['PERFORMER']:
     ChatBot = PerformerIntegration.load_model(api_config["MODEL_DIR"], api_config["DEFAULT_MODEL_NAME"])
 else:
     ChatBot = TransformerIntegration.load_model(api_config["MODEL_DIR"], api_config["DEFAULT_MODEL_NAME"])
