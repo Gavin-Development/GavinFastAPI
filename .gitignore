@@ -133,3 +133,4 @@ tests
 .pytest_cache
 .pycrunch-config.yaml
 models
+api_config.json
