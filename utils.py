@@ -10,6 +10,7 @@ def config_verification(config: dict) -> Union[Tuple[bool, InvalidConfig], Tuple
               "LOGGING_LEVEL": str}
 
     for field, data_type in fields.items():
+        field = field.upper()
         if field not in config.keys():
             return False, InvalidConfig(f"{field} is missing from config")
         if not isinstance(config[field], data_type):
