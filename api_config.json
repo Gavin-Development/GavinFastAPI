@@ -1,12 +1,11 @@
 {
-  "PREFORMER": false,
+  "PERFORMER": false,
   "MODEL_DIR": "./models/",
-  "DEFAULT_MODEL_NAME": "TestTransformer",
+  "DEFAULT_MODEL_NAME": "Project_Jasmine",
   "VERSION_OVERRIDE": false,
   "VERSION": "",
-  "HOST": "localhost",
+  "HOST": "0.0.0.0",
   "PORT": 8000,
-  "LOG_LEVEL": "info",
   "FILTERED_WORDS": ["cock", "tf", "reggin", "bellend", "twat",
                             "bollocks", "wtf", "slag", "fucker", "rapist",
                             "shit", "bitch", "minger", "nigger", "fking",
@@ -19,5 +18,6 @@
   "UVICORN_WORKERS": "1",
   "MESSAGE_TIMEOUT": 5.0,
   "CACHE_REQUEST_MAX": 100,
-  "MAX_CACHE_STORE": 1000
+  "MAX_CACHE_STORE": 1000,
+  "LOGGING_LEVEL": "DEBUG"
 }
